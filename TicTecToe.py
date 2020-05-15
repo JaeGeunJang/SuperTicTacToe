@@ -1,7 +1,8 @@
 def pboard(board) :
-    print("======  =======  =======")
+    print("\n ------- ------- -------")
     for a in range (3) :
         for b in range (3) :
+            print("|", end = " ")
             for c in range (3) :
                 for d in range (3) :
                     if board[a*3+c][b*3+d] == 1 :
@@ -10,9 +11,9 @@ def pboard(board) :
                         print("X", end = " ")
                     else :
                         print("-", end = " ")
-                print("||", end = " ")
+                print("|", end = " ")
             print("")
-        print("======  =======  =======")
+        print(" ------- ------- -------")
 
 def mboard(board,num) :
     for i in range (1,10) :
@@ -67,6 +68,7 @@ def main() :
     order = 1
     while(True) :
         prenum = num
+        pboard(board)
         board, order, num = inputGame(board ,num, order)
         win = winGame(board,prenum)
         if win != 0 :
@@ -77,5 +79,4 @@ def main() :
                 print("Player 1 win")
                 break
 
-        pboard(board)
 main()
