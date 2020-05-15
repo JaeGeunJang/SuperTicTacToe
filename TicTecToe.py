@@ -59,7 +59,7 @@ def winGame(board,num) :
         return board[num][0]
 
 
-
+'''
 def main() :
     board = [[0 for i in range (9)] for k in range (9)]
     tboard = [[i+k*10 for i in range (1,10)] for k in range (1,10)]
@@ -79,4 +79,4 @@ def main() :
                 print("Player 1 win")
                 break
 
-main()
+'''
