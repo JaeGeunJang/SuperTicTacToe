@@ -1,4 +1,27 @@
 import pygame as pg
+
+def pboard(board) :
+    print("\n ------- ------- -------")
+    for a in range (3) :
+        for b in range (3) :
+            print("|", end = " ")
+            for c in range (3) :
+                for d in range (3) :
+                    if board[a*3+c][b*3+d] == 1 :
+                        print("O", end = " ")
+                    elif board[a*3+c][b*3+d] == -1 :
+                        print("X", end = " ")
+                    else :
+                        print("-", end = " ")
+                print("|", end = " ")
+            print("")
+        print(" ------- ------- -------")
+
+board = [[0 for i in range (9)] for k in range (9)]
+
+'''
+'''
+
 pg.init()
 width, height = 900,900
 
@@ -9,21 +32,35 @@ RED = (255,0,0)
 BACKGROUND = (20, 190, 170)
 LINES = (15, 160, 145)
 BLINE = (10, 100, 100)
+
+pos = []
+for j in range(3) :
+    for i in range(3) :
+        pos.append([width*i/3,height*j/3,width/3,height/3])
+
+minipos = []
+for j in range(3) :
+    for i in range(3) :
+        minipos.append([width*i/9,height*j/9])
+'''
 pos = [[0,0,width/3,height/3],[width/3,0,width/3,height/3],[width*2/3,0,width/3,height/3],
        [0,height/3,width/3,height/3],[width/3,height/3,width/3,height/3],
        [width*2/3,height/3,width/3,height/3],[0,height*2/3,width/3,height/3],
        [width/3,height*2/3,width/3,height/3],[width*2/3,height*2/3,width/3,height/3]]
+
 minipos = [[0,0],[width/9,0],[width*2/9,0],
            [0,height/9], [width/9,height/9],[width*2/9,height/9],
            [0,height*2/9], [width/9, height*2/9],[width*2/9,height*2/9]]
+'''
 
 
 linewidth = int(height/100)
 halfwidth = int(height/200)
-
 markwidth = int(width/24)
 
-nposi = 5
+nposi = 4
+miniposi = 4
+player = 1
 
 screen = pg.display.set_mode((width, height))
 done = True
@@ -38,33 +75,60 @@ def draw_background(screen, num) :
     for i in range (1,3) :
         pg.draw.line(screen, BLINE, [width*i/3,0],[width*i/3, height],linewidth)
         pg.draw.line(screen, BLINE, [0,height*i/3],[width, height*i/3],linewidth)
-    pg.draw.rect(screen, RED,pos[num-1],linewidth)
-
-def drawX(screen,x,y) :
-    pg.draw.line(screen, RED, [x-markwidth,y-markwidth],[x+markwidth,y+markwidth],linewidth*2)
-    pg.draw.line(screen, RED, [x+markwidth,y-markwidth],[x-markwidth,y+markwidth],linewidth*2)
-
+    pg.draw.rect(screen, RED,pos[num],linewidth)
 
 def drawO(screen, x, y) :
     x = int(x)
     y = int(y)
     pg.draw.circle(screen, BLUE, [x,y],markwidth , linewidth)
 
+def drawX(screen,x,y) :
+    pg.draw.line(screen, RED, [x-markwidth,y-markwidth],[x+markwidth,y+markwidth],linewidth*2)
+    pg.draw.line(screen, RED, [x+markwidth,y-markwidth],[x-markwidth,y+markwidth],linewidth*2)
+
+def judgeIn(screen, posi) :
+    if pos[nposi][0] < posi[0] < pos[nposi][0]+pos[nposi][2] and pos[nposi][1] < posi[1] < pos[nposi][1]+pos[nposi][3] :
+        return True
+    else :
+        return False
+
+def drawMsqure(screen, posi) :
+    global miniposi
+    if judgeIn(screen, posi) :
+        for i in range (9) :
+            if pos[nposi][0]+minipos[i][0] < posi[0] < pos[nposi][0]+minipos[i][0]+pos[nposi][2]/3 :
+                if pos[nposi][1]+minipos[i][1] < posi[1] < pos[nposi][1]+minipos[i][1]+pos[nposi][3]/3 :
+                    repos = [pos[nposi][0]+minipos[i][0], pos[nposi][1]+minipos[i][1] ,
+                            pos[nposi][2]/3, pos[nposi][3]/3]
+                    miniposi = i
+                    pg.draw.rect(screen, BLUE, repos, linewidth)
+
+def drawGameboard(screen, board) :
+    for i in range (9) :
+        for j in range(9) :
+            if board[i][j] == 1 :
+                drawO(screen,pos[i][0]+minipos[j][0]+width/18,pos[i][1]+minipos[j][1]+height/18)
+            if board[i][j] == -1 :
+                drawX(screen,pos[i][0]+minipos[j][0]+width/18,pos[i][1]+minipos[j][1]+height/18)
+
 while done :
     screen.fill(BACKGROUND)
     clock.tick(10)
     posi = pg.mouse.get_pos()
-    for i in range(9) :
-        if pos[i][0] < posi[0] < pos[i][0]+pos[i][2] and pos[i][1] < posi[1] < pos[i][1]+pos[i][3] :
-            nposi = i+1
-
-
     for event in pg.event.get() :
         if event.type == pg.QUIT :
             done = False
-        if event.type== pg.KEYUP :
+        if event.type == pg.KEYUP :
             done = False
+        if event.type == pg.MOUSEBUTTONUP :
+            if judgeIn(screen, posi) :
+                board[nposi][miniposi] = player
+                player *= -1
+                nposi = miniposi
+
     draw_background(screen, nposi)
+    drawMsqure(screen, posi)
+    drawGameboard(screen,board)
 
     pg.display.flip()
 
