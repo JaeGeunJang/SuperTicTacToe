@@ -1,26 +1,6 @@
 import pygame as pg
-
-def pboard(board) :
-    print("\n ------- ------- -------")
-    for a in range (3) :
-        for b in range (3) :
-            print("|", end = " ")
-            for c in range (3) :
-                for d in range (3) :
-                    if board[a*3+c][b*3+d] == 1 :
-                        print("O", end = " ")
-                    elif board[a*3+c][b*3+d] == -1 :
-                        print("X", end = " ")
-                    else :
-                        print("-", end = " ")
-                print("|", end = " ")
-            print("")
-        print(" ------- ------- -------")
-
-board = [[0 for i in range (9)] for k in range (9)]
-
-'''
-'''
+import TicTecToe as ttt
+from TicTecToe import *
 
 pg.init()
 width, height = 900,900
@@ -42,22 +22,12 @@ minipos = []
 for j in range(3) :
     for i in range(3) :
         minipos.append([width*i/9,height*j/9])
-'''
-pos = [[0,0,width/3,height/3],[width/3,0,width/3,height/3],[width*2/3,0,width/3,height/3],
-       [0,height/3,width/3,height/3],[width/3,height/3,width/3,height/3],
-       [width*2/3,height/3,width/3,height/3],[0,height*2/3,width/3,height/3],
-       [width/3,height*2/3,width/3,height/3],[width*2/3,height*2/3,width/3,height/3]]
-
-minipos = [[0,0],[width/9,0],[width*2/9,0],
-           [0,height/9], [width/9,height/9],[width*2/9,height/9],
-           [0,height*2/9], [width/9, height*2/9],[width*2/9,height*2/9]]
-'''
-
 
 linewidth = int(height/100)
 halfwidth = int(height/200)
 markwidth = int(width/24)
 
+prenposi = 4
 nposi = 4
 miniposi = 4
 player = 1
@@ -118,17 +88,23 @@ while done :
     for event in pg.event.get() :
         if event.type == pg.QUIT :
             done = False
-        if event.type == pg.KEYUP :
-            done = False
         if event.type == pg.MOUSEBUTTONUP :
             if judgeIn(screen, posi) :
                 board[nposi][miniposi] = player
                 player *= -1
+                prenposi = nposi
                 nposi = miniposi
 
     draw_background(screen, nposi)
     drawMsqure(screen, posi)
     drawGameboard(screen,board)
+
+    if ttt.winGame(board,prenposi) == 1 :
+        print("Player 1 win")
+        done = False
+    elif ttt.winGame(board, prenposi) == -1 :
+        print("Player 2 win")
+        done = False
 
     pg.display.flip()
 
