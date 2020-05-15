@@ -1,3 +1,6 @@
+board = [[0 for i in range (9)] for k in range (9)]
+winstate = [[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]]
+
 def pboard(board) :
     print("\n ------- ------- -------")
     for a in range (3) :
@@ -44,24 +47,14 @@ def inputGame(board, num, order) :
     return b, o, selec
 
 def winGame(board,num) :
-    for hori in range (3) :
-        if board[num][hori*3] == board[num][hori*3+1] == board[num][hori*3+2] and board[num][hori*3] != 0 :
-            print("horizon win")
-            return board[num][hori*3]
-        if board[num][hori*3] == board[num][hori+3] == board[num][hori+6] and board[num][hori*3] != 0 :
-            print("Vertical win")
-            return board[num][hori*3]
-    if board[num][0] == board[num][4] == board[num][8] and board[num][0] != 0 :
-        print("0 to 9 win")
-        return board[num][0]
-    if board[num][2] == board[num][4] == board[num][6] and board[num][2] != 0 :
-        print("3 to 7 win")
-        return board[num][0]
+    for i in range (8) :
+        if board[num][winstate[i][0]] == board[num][winstate[i][1]] == board[num][winstate[i][2]] :
+            if board[num][winstate[i][0]] != 0 :
+                print(winstate[i])
+                return board[num][winstate[i][0]]
 
 
-'''
 def main() :
-    board = [[0 for i in range (9)] for k in range (9)]
     tboard = [[i+k*10 for i in range (1,10)] for k in range (1,10)]
 
     num = 4
@@ -78,5 +71,3 @@ def main() :
             if win == 1 :
                 print("Player 1 win")
                 break
-
-'''
